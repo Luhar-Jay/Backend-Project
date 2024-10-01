@@ -49,6 +49,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+// this is use of bcrypt the pass before save
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -56,10 +57,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// compare the password
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// generate the access token and refresh token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
